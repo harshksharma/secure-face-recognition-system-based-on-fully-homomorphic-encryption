@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Harhant</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
+</head>
+<body>
+  <nav>
+    <div class="brand">
+      <img src="{{ url_for('static', filename='HA4.png') }}" alt="Harhant Logo">
+      <div class="company-name">Harhant</div>
+    </div>
+    <div class="right-nav">
+      <a href="#">Contact us</a>
+      <a href="#">Help & Support</a>
+    </div>
+  </nav>
+
+  <div class="message">
+    <div class="container">
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="alert-container">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      <!-- Status message area (circled area) -->
+      <div id="statusMessage" style="text-align: center; font-weight: bold; color: #07a5ae; margin-bottom: 10px;"></div>
+
+      <h2>Login Page</h2>
+      <form id="loginForm" method="POST" action="{{ url_for('login') }}">
+        <video id="webcam" autoplay></video>
+        <input type="hidden" id="capturedImage" name="imageData" />
+
+        <input type="email" name="email" placeholder="Enter Email ID" required />
+        <input type="text" name="username" placeholder="Enter Username" required />
+
+        <button id="loginButton" type="button">Login & Capture</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const webcam = document.getElementById('webcam');
+    const loginButton = document.getElementById('loginButton');
+    const loginForm = document.getElementById('loginForm');
+    const capturedImageInput = document.getElementById('capturedImage');
+    const statusMessage = document.getElementById('statusMessage');
+
+    let stream = null;
+
+    // Request access to the webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((mediaStream) => {
+        stream = mediaStream;
+        webcam.srcObject = stream;
+      })
+      .catch((err) => {
+        console.error("Webcam access error:", err);
+        statusMessage.textContent = "Unable to access the camera.";
+      });
+
+    // Capture image and stop camera on button click
+    loginButton.addEventListener('click', () => {
+      // Create an offscreen canvas to capture the current frame
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      // Maintain aspect ratio
+      canvas.height = 300 / (webcam.videoWidth / webcam.videoHeight);
+
+      const context = canvas.getContext('2d');
+      context.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+
+      // Convert to base64
+      capturedImageInput.value = canvas.toDataURL('image/jpeg', 0.7);
+
+      // Stop the camera stream
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+
+      // Show "processing" message
+      statusMessage.textContent = "Processing your face data, please wait...";
+
+      // Submit the form automatically
+      loginForm.submit();
+    });
+  </script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Times New Roman', Times, serif, sans-serif;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-image: url('https://img.freepik.com/free-vector/blue-ripped-note-collection-vector_53876-143604.jpg');
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    nav {
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px; /* Reduce padding */
+  width: 100%;
+  font-size: 18px; /* Optionally reduce font size */
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  height: 50px; /* Set a fixed smaller height if necessary */
+}
+    .brand {
+      display: flex;
+      align-items: center;
+    }
+    .brand img {
+      max-height: 20px;
+      margin-right: 10px;
+    }
+    .company-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #085f63;
+    }
+    .right-nav {
+      display: flex;
+      gap: 15px;
+    }
+    .right-nav a {
+      text-decoration: none;
+      padding: 10px 15px;
+      color: #085f63;
+      border-radius: 20px;
+      transition: background 0.3s ease;
+    }
+    .right-nav a:hover {
+      background: #0ad1db;
+      color: white;
+    }
+    .container {
+      background: rgba(229, 229, 229, 0.353);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.715);
+      text-align: center;
+      width: 450px;
+    }
+    .message {
+      background: rgba(229, 229, 229, 0.353);
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.893);
+      width: 1000px;
+      margin-top: 40px;
+      position: relative;
+      top: 50px; /* Adjust this value */
+    }
+    h2 {
+      color: #07a5ae;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      background-color: #41a5aa;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #018082;
+    }
+    video {
+      width: 100%;
+      border: 2px solid #ccc;
+      margin: 10px 0;
+    }
+  </style>
+</body>
+</html>

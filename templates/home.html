@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harhant</title>
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Times New Roman', Times, serif, sans-serif;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-image: url('https://img.freepik.com/free-vector/blue-ripped-note-collection-vector_53876-143604.jpg');
+    }
+    nav {
+      background-color: rgba(255, 255, 255, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px 20px;
+      font-size: 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+    }
+    .brand img {
+      max-height: 20px;
+      margin-right: 10px;
+    }
+    .company-name {
+      font-size: 24px;
+      font-weight: bold;
+      color: #085f63;
+    }
+    .right-nav a {
+      margin-left: 10px;
+      text-decoration: none;
+      padding: 10px 15px;
+      color: #085f63;
+      border-radius: 20px;
+      transition: background 0.3s ease;
+    }
+    .right-nav a:hover {
+      background: #0ad1db;
+      color: white;
+    }
+    .center-text, .additional-text {
+      text-align: center;
+      color: #195a6a;
+      font-size: 40px;
+      margin-top: 20px;
+      opacity: 0;
+      transition: opacity 2s ease-in-out;
+    }
+    .show { opacity: 1; }
+    .registration-section {
+      text-align: center;
+      margin-top: 50px;
+    }
+    .registration-button {
+      background: #085f63;
+      color: white;
+      font-size: 24px;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+      text-decoration: none;
+    }
+    .registration-button:hover {
+      background: #0ab2b5;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="brand">
+      <img src="{{ url_for('static', filename='HA4.png') }}" alt="Harhant Logo">
+      <div class="company-name">Harhant</div>
+    </div>
+    <div class="right-nav">
+      <a href="#">Contact us</a>
+      <a href="#">Help & Support</a>
+      <a href="{{ url_for('login') }}" class="btn">Log In</a>
+      <a href="{{ url_for('signup') }}" class="btn">Sign Up</a>
+    </div>
+  </nav>
+  
+  <div class="container mt-3" id="flask">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="alert-container">
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}" role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+  </div>
+  
+  <div class="center-text" id="centerText">
+    "Secure Face Recognition System <br> Based On <br> Fully Homomorphic Encryption."
+  </div>
+  
+  <div class="additional-text" id="additionalText">
+    “Encryption is the defense against <br> the dark arts in the digital realm.”
+  </div>
+
+  <section class="registration-section">
+    <h2 class="animate-text">Are you new here? Please register.</h2>
+    <a href="{{ url_for('signup') }}" class="registration-button">New Registration</a>
+  </section>
+
+  <script>
+    window.onload = function() {
+      document.getElementById('centerText').classList.add('show');
+      document.getElementById('additionalText').classList.add('show');
+    };
+  </script>
+</body>
+</html>
